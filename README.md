@@ -43,4 +43,4 @@ To run this project locally, you'll need the following:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/program-admin-dashboard.git
+   git clone https://github.com/EmmieMuthiga/program-admin-dashboard.git
