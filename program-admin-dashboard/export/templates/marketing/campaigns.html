@@ -1,0 +1,390 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <p class="lead">Track and manage marketing campaigns for your training programs.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('marketing.create_campaign') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Create New Campaign
+        </a>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow">
+    <div class="card-header bg-dark">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-campaigns" type="button" role="tab" aria-controls="all-campaigns" aria-selected="true">All Campaigns</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-campaigns" type="button" role="tab" aria-controls="email-campaigns" aria-selected="false">Email</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo-campaigns" type="button" role="tab" aria-controls="seo-campaigns" aria-selected="false">SEO</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social-campaigns" type="button" role="tab" aria-controls="social-campaigns" aria-selected="false">Social Media</button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <!-- All Campaigns Tab -->
+            <div class="tab-pane fade show active" id="all-campaigns" role="tabpanel" aria-labelledby="all-tab">
+                {% if campaigns %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Date Range</th>
+                                <th>Metrics</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in campaigns %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if campaign.type == 'email' %}bg-primary
+                                        {% elif campaign.type == 'seo' %}bg-success
+                                        {% elif campaign.type == 'social' %}bg-info
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ campaign.type }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if campaign.start_date and campaign.end_date %}
+                                        {{ campaign.start_date|format_date("%b %d, %Y") }} to 
+                                        {{ campaign.end_date|format_date("%b %d, %Y") }}
+                                    {% elif campaign.start_date %}
+                                        Started {{ campaign.start_date|format_date("%b %d, %Y") }}
+                                    {% else %}
+                                        <span class="text-muted">No dates specified</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if campaign.metrics_file %}
+                                        <a href="{{ url_for('static', filename='uploads/' + campaign.metrics_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-chart-bar me-1"></i>View Metrics
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No metrics uploaded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewCampaignModal{{ campaign.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a href="{{ url_for('marketing.edit_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteCampaignModal{{ campaign.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- View Campaign Modal -->
+                                    <div class="modal fade" id="viewCampaignModal{{ campaign.id }}" tabindex="-1" aria-labelledby="viewCampaignModalLabel{{ campaign.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content bg-dark">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="viewCampaignModalLabel{{ campaign.id }}">{{ campaign.name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <span class="badge 
+                                                            {% if campaign.type == 'email' %}bg-primary
+                                                            {% elif campaign.type == 'seo' %}bg-success
+                                                            {% elif campaign.type == 'social' %}bg-info
+                                                            {% else %}bg-secondary{% endif %}">
+                                                            {{ campaign.type }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <strong>Date Range:</strong>
+                                                        {% if campaign.start_date and campaign.end_date %}
+                                                            {{ campaign.start_date|format_date("%B %d, %Y") }} to 
+                                                            {{ campaign.end_date|format_date("%B %d, %Y") }}
+                                                        {% elif campaign.start_date %}
+                                                            Started {{ campaign.start_date|format_date("%B %d, %Y") }}
+                                                        {% else %}
+                                                            <span class="text-muted">No dates specified</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <strong>Created By:</strong> {{ campaign.creator.username }}
+                                                    </div>
+                                                    {% if campaign.metrics_file %}
+                                                    <div class="mb-3">
+                                                        <strong>Metrics:</strong>
+                                                        <div class="mt-2">
+                                                            <a href="{{ url_for('static', filename='uploads/' + campaign.metrics_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                                <i class="fas fa-chart-bar me-1"></i>Download Metrics File
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if campaign.description %}
+                                                    <div class="mb-3">
+                                                        <strong>Description:</strong>
+                                                        <div class="card bg-dark border-secondary mt-2">
+                                                            <div class="card-body">
+                                                                {{ campaign.description|nl2br }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <a href="{{ url_for('marketing.edit_campaign', campaign_id=campaign.id) }}" class="btn btn-primary">Edit Campaign</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Delete Campaign Modal -->
+                                    <div class="modal fade" id="deleteCampaignModal{{ campaign.id }}" tabindex="-1" aria-labelledby="deleteCampaignModalLabel{{ campaign.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content bg-dark">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteCampaignModalLabel{{ campaign.id }}">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete the campaign "{{ campaign.name }}"? This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="{{ url_for('marketing.delete_campaign', campaign_id=campaign.id) }}" method="POST">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-secondary">
+                    <div class="text-center">
+                        <i class="fas fa-bullhorn fa-3x mb-3"></i>
+                        <p>No campaigns have been created yet.</p>
+                        <a href="{{ url_for('marketing.create_campaign') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Your First Campaign
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Email Campaigns Tab -->
+            <div class="tab-pane fade" id="email-campaigns" role="tabpanel" aria-labelledby="email-tab">
+                {% set email_campaigns = campaigns|selectattr('type', 'equalto', 'email')|list %}
+                {% if email_campaigns %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date Range</th>
+                                <th>Metrics</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in email_campaigns %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>
+                                    {% if campaign.start_date and campaign.end_date %}
+                                        {{ campaign.start_date|format_date("%b %d, %Y") }} to 
+                                        {{ campaign.end_date|format_date("%b %d, %Y") }}
+                                    {% elif campaign.start_date %}
+                                        Started {{ campaign.start_date|format_date("%b %d, %Y") }}
+                                    {% else %}
+                                        <span class="text-muted">No dates specified</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if campaign.metrics_file %}
+                                        <a href="{{ url_for('static', filename='uploads/' + campaign.metrics_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-chart-bar me-1"></i>View Metrics
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No metrics uploaded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewCampaignModal{{ campaign.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a href="{{ url_for('marketing.edit_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-secondary">
+                    <div class="text-center">
+                        <i class="fas fa-envelope fa-3x mb-3"></i>
+                        <p>No email campaigns found.</p>
+                        <a href="{{ url_for('marketing.create_campaign') }}?type=email" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Email Campaign
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- SEO Campaigns Tab -->
+            <div class="tab-pane fade" id="seo-campaigns" role="tabpanel" aria-labelledby="seo-tab">
+                {% set seo_campaigns = campaigns|selectattr('type', 'equalto', 'seo')|list %}
+                {% if seo_campaigns %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date Range</th>
+                                <th>Metrics</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in seo_campaigns %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>
+                                    {% if campaign.start_date and campaign.end_date %}
+                                        {{ campaign.start_date|format_date("%b %d, %Y") }} to 
+                                        {{ campaign.end_date|format_date("%b %d, %Y") }}
+                                    {% elif campaign.start_date %}
+                                        Started {{ campaign.start_date|format_date("%b %d, %Y") }}
+                                    {% else %}
+                                        <span class="text-muted">No dates specified</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if campaign.metrics_file %}
+                                        <a href="{{ url_for('static', filename='uploads/' + campaign.metrics_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-chart-bar me-1"></i>View Metrics
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No metrics uploaded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewCampaignModal{{ campaign.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a href="{{ url_for('marketing.edit_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-secondary">
+                    <div class="text-center">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <p>No SEO campaigns found.</p>
+                        <a href="{{ url_for('marketing.create_campaign') }}?type=seo" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create SEO Campaign
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Social Media Campaigns Tab -->
+            <div class="tab-pane fade" id="social-campaigns" role="tabpanel" aria-labelledby="social-tab">
+                {% set social_campaigns = campaigns|selectattr('type', 'equalto', 'social')|list %}
+                {% if social_campaigns %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date Range</th>
+                                <th>Metrics</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in social_campaigns %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>
+                                    {% if campaign.start_date and campaign.end_date %}
+                                        {{ campaign.start_date|format_date("%b %d, %Y") }} to 
+                                        {{ campaign.end_date|format_date("%b %d, %Y") }}
+                                    {% elif campaign.start_date %}
+                                        Started {{ campaign.start_date|format_date("%b %d, %Y") }}
+                                    {% else %}
+                                        <span class="text-muted">No dates specified</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if campaign.metrics_file %}
+                                        <a href="{{ url_for('static', filename='uploads/' + campaign.metrics_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-chart-bar me-1"></i>View Metrics
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No metrics uploaded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewCampaignModal{{ campaign.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a href="{{ url_for('marketing.edit_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-secondary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-secondary">
+                    <div class="text-center">
+                        <i class="fas fa-share-alt fa-3x mb-3"></i>
+                        <p>No social media campaigns found.</p>
+                        <a href="{{ url_for('marketing.create_campaign') }}?type=social" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Social Media Campaign
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

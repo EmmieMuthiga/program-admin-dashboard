@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <p class="lead">Manage your training programs, schedules, and materials.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('programs.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add New Program
+        </a>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date Range</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Faculty</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if programs %}
+                        {% for program in programs %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('programs.view', program_id=program.id) }}">{{ program.title }}</a>
+                            </td>
+                            <td>
+                                {{ program.start_date|format_date("%b %d, %Y") }} to 
+                                {{ program.end_date|format_date("%b %d, %Y") }}
+                            </td>
+                            <td>{{ program.location }}</td>
+                            <td>
+                                <span class="badge {% if program.status == 'active' %}bg-success
+                                    {% elif program.status == 'draft' %}bg-secondary
+                                    {% elif program.status == 'completed' %}bg-info
+                                    {% elif program.status == 'cancelled' %}bg-danger
+                                    {% endif %}">{{ program.status }}</span>
+                            </td>
+                            <td>
+                                {{ program.faculties|count }} assigned
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('programs.view', program_id=program.id) }}" class="btn btn-outline-primary" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('programs.edit', program_id=program.id) }}" class="btn btn-outline-secondary" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ program.id }}" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteModal{{ program.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ program.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content bg-dark">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ program.id }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the program "{{ program.title }}"? This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{{ url_for('programs.delete', program_id=program.id) }}" method="POST">
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No programs found. <a href="{{ url_for('programs.create') }}">Create your first program</a>.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <p class="lead">Manage faculty members for your training programs.</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('faculty.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add New Faculty
+        </a>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Expertise</th>
+                        <th>Programs</th>
+                        <th>Contract</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if faculty %}
+                        {% for member in faculty %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('faculty.view', faculty_id=member.id) }}">
+                                    {{ member.first_name }} {{ member.last_name }}
+                                </a>
+                            </td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.expertise or '-' }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ member.programs.count() }}</span>
+                            </td>
+                            <td>
+                                {% if member.contract_file %}
+                                    <a href="{{ url_for('static', filename='uploads/' + member.contract_file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-file-contract"></i>
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">No contract</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('faculty.view', faculty_id=member.id) }}" class="btn btn-outline-primary" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('faculty.edit', faculty_id=member.id) }}" class="btn btn-outline-secondary" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ member.id }}" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteModal{{ member.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ member.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content bg-dark">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ member.id }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the faculty member "{{ member.first_name }} {{ member.last_name }}"? This action cannot be undone.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{{ url_for('faculty.delete', faculty_id=member.id) }}" method="POST">
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No faculty members found. <a href="{{ url_for('faculty.create') }}">Add your first faculty member</a>.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

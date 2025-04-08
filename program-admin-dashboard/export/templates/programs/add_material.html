@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <p class="lead">Add a new material to {{ program.title }}</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('programs.view', program_id=program.id) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Program
+        </a>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow">
+    <div class="card-body">
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            {{ form.program_id(value=program.id) }}
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    {{ form.title.label(class="form-label") }}
+                    {% if form.title.errors %}
+                        {{ form.title(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class="form-control") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    {{ form.description.label(class="form-label") }}
+                    {% if form.description.errors %}
+                        {{ form.description(class="form-control is-invalid", rows=3) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.description(class="form-control", rows=3) }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form.file_type.label(class="form-label") }}
+                    {% if form.file_type.errors %}
+                        {{ form.file_type(class="form-select is-invalid", id="fileType") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.file_type.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.file_type(class="form-select", id="fileType") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3" id="fileUploadSection">
+                <div class="col-md-12">
+                    {{ form.file.label(class="form-label") }}
+                    {% if form.file.errors %}
+                        {{ form.file(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.file.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.file(class="form-control") }}
+                    {% endif %}
+                    <small class="form-text text-muted">Accepted file types: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT</small>
+                </div>
+            </div>
+            
+            <div class="row mb-4" id="linkSection" style="display: none;">
+                <div class="col-md-12">
+                    {{ form.external_link.label(class="form-label") }}
+                    {% if form.external_link.errors %}
+                        {{ form.external_link(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.external_link.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.external_link(class="form-control", placeholder="https://example.com/resource") }}
+                    {% endif %}
+                    <small class="form-text text-muted">Enter the full URL including https://</small>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('programs.view', program_id=program.id) }}" class="btn btn-secondary me-md-2">Cancel</a>
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileTypeSelect = document.getElementById('fileType');
+        const fileUploadSection = document.getElementById('fileUploadSection');
+        const linkSection = document.getElementById('linkSection');
+        
+        function toggleSections() {
+            if (fileTypeSelect.value === 'link') {
+                fileUploadSection.style.display = 'none';
+                linkSection.style.display = 'block';
+            } else {
+                fileUploadSection.style.display = 'block';
+                linkSection.style.display = 'none';
+            }
+        }
+        
+        // Set initial state
+        toggleSections();
+        
+        // Add event listener for changes
+        fileTypeSelect.addEventListener('change', toggleSections);
+    });
+</script>
+{% endblock %}

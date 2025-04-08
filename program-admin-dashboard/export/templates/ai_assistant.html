@@ -1,0 +1,327 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="lead">Use our AI assistant to generate content, get suggestions, and automate tasks.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card bg-dark border-0 shadow mb-4">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">AI Assistant</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="" id="aiAssistantForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.task_type.label(class="form-label") }}
+                        {% if form.task_type.errors %}
+                            {{ form.task_type(class="form-select is-invalid", id="taskType") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.task_type.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.task_type(class="form-select", id="taskType") }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.input_text.label(class="form-label", id="inputLabel") }}
+                        {% if form.input_text.errors %}
+                            {{ form.input_text(class="form-control is-invalid", rows=8, id="inputText") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.input_text.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.input_text(class="form-control", rows=8, id="inputText") }}
+                        {% endif %}
+                        <small class="form-text text-muted" id="inputHelp">Enter the details for generating AI content</small>
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary", id="generateBtn") }}
+                        <div class="spinner-border text-light mx-auto mt-3 d-none" id="loadingSpinner" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card bg-dark border-0 shadow">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">Task Descriptions</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="taskDescriptions">
+                    <div class="accordion-item bg-dark">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button bg-dark text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Generate Training Outline
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#taskDescriptions">
+                            <div class="accordion-body">
+                                <p>Creates a comprehensive training outline based on a program title and additional information. Includes program objectives, key topics, suggested timeline, learning activities, and assessment methods.</p>
+                                <p><strong>Input example:</strong> "Advanced Project Management for Tech Teams" with details about the target audience and desired outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-dark">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button bg-dark text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Suggest Social Media Posts
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#taskDescriptions">
+                            <div class="accordion-body">
+                                <p>Generates engaging social media post ideas related to a training topic. Each suggestion includes a catchy headline, main content, suggested hashtags, and a call to action.</p>
+                                <p><strong>Input example:</strong> "Data Science Bootcamp" and optionally specify a platform like "LinkedIn" or "Twitter".</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-dark">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button bg-dark text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Draft Weekly Report Summary
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#taskDescriptions">
+                            <div class="accordion-body">
+                                <p>Creates a professional summary of weekly activities and metrics. The summary includes key accomplishments, important metrics, challenges faced, and next steps.</p>
+                                <p><strong>Input example:</strong> Bullet points of the week's activities, attendance numbers, feedback scores, etc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-dark">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button bg-dark text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Recommend Follow-up Emails
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#taskDescriptions">
+                            <div class="accordion-body">
+                                <p>Generates three email templates for following up with program participants: a thank you email, a feedback request, and a next steps email. Each template includes a subject line, greeting, body text, call to action, and sign-off.</p>
+                                <p><strong>Input example:</strong> "Leadership Workshop for Mid-level Managers" with details about the program content and outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card bg-dark border-0 shadow h-100">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">AI-Generated Result</h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-secondary d-none" id="copyBtn">
+                        <i class="fas fa-copy me-1"></i>Copy
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if not result %}
+                <div class="text-center py-5" id="emptyState">
+                    <i class="fas fa-robot fa-4x mb-3 text-muted"></i>
+                    <h4 class="text-muted">No content generated yet</h4>
+                    <p class="text-muted">Select a task type and provide input to generate AI content</p>
+                </div>
+                {% endif %}
+                
+                <div id="resultContainer" class="{% if not result %}d-none{% endif %}">
+                    <pre id="resultContent" class="p-3 bg-dark border border-secondary rounded" style="white-space: pre-wrap; font-family: inherit;">{{ result }}</pre>
+                </div>
+                
+                {% if task_type %}
+                <div class="alert alert-info mt-3" id="suggestionAlert">
+                    <h6 class="alert-heading">Next Steps:</h6>
+                    {% if task_type == 'training_outline' %}
+                    <p>You can now use this outline to create a new training program:</p>
+                    <a href="{{ url_for('programs.create') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus me-1"></i>Create Program
+                    </a>
+                    {% elif task_type == 'social_post' %}
+                    <p>Use these post ideas in your social media scheduler:</p>
+                    <a href="{{ url_for('marketing.scheduler') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-calendar-plus me-1"></i>Go to Scheduler
+                    </a>
+                    {% elif task_type == 'report_summary' %}
+                    <p>Use this summary in your weekly report:</p>
+                    <a href="{{ url_for('admin.create_report') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-file-alt me-1"></i>Create Report
+                    </a>
+                    {% elif task_type == 'follow_up_email' %}
+                    <p>These email templates can be used to follow up with participants after your programs.</p>
+                    <a href="{{ url_for('participants.index') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-users me-1"></i>View Participants
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const taskTypeSelect = document.getElementById('taskType');
+    const inputLabel = document.getElementById('inputLabel');
+    const inputText = document.getElementById('inputText');
+    const inputHelp = document.getElementById('inputHelp');
+    const generateBtn = document.getElementById('generateBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const resultContainer = document.getElementById('resultContainer');
+    const resultContent = document.getElementById('resultContent');
+    const emptyState = document.getElementById('emptyState');
+    const copyBtn = document.getElementById('copyBtn');
+    const form = document.getElementById('aiAssistantForm');
+    
+    // Change input label and placeholder based on task type
+    taskTypeSelect.addEventListener('change', function() {
+        const taskType = this.value;
+        
+        if (taskType === 'training_outline') {
+            inputLabel.textContent = 'Program Title and Details';
+            inputText.placeholder = 'Enter the program title and any additional information about your training program...';
+            inputHelp.textContent = 'Include the title, target audience, program duration, and specific skills to be developed';
+        } else if (taskType === 'social_post') {
+            inputLabel.textContent = 'Training Topic and Platform';
+            inputText.placeholder = 'Enter the training topic and optionally specify the platform (e.g., LinkedIn, Twitter)...';
+            inputHelp.textContent = 'For best results, include key points about your program that would interest potential participants';
+        } else if (taskType === 'report_summary') {
+            inputLabel.textContent = 'Weekly Activities and Metrics';
+            inputText.placeholder = 'Enter the key activities, metrics, and achievements from the past week...';
+            inputHelp.textContent = 'Include attendance numbers, completed programs, participant feedback, and any challenges faced';
+        } else if (taskType === 'follow_up_email') {
+            inputLabel.textContent = 'Program Information';
+            inputText.placeholder = 'Enter details about the program for which you need follow-up emails...';
+            inputHelp.textContent = 'Include program title, key topics covered, and specific outcomes participants should have achieved';
+        }
+    });
+    
+    // Handle form submission with AJAX
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading spinner
+        generateBtn.disabled = true;
+        loadingSpinner.classList.remove('d-none');
+        
+        // Get form data
+        const formData = {
+            task_type: taskTypeSelect.value,
+            input_text: inputText.value,
+        };
+        
+        // Make AJAX request
+        fetch('{{ url_for("ai_assistant.generate") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading spinner
+            generateBtn.disabled = false;
+            loadingSpinner.classList.add('d-none');
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            // Display result
+            emptyState.classList.add('d-none');
+            resultContainer.classList.remove('d-none');
+            resultContent.textContent = data.result;
+            copyBtn.classList.remove('d-none');
+            
+            // Add suggestion alert if not already present
+            if (!document.getElementById('suggestionAlert')) {
+                const alert = document.createElement('div');
+                alert.id = 'suggestionAlert';
+                alert.className = 'alert alert-info mt-3';
+                
+                let alertContent = '<h6 class="alert-heading">Next Steps:</h6>';
+                
+                if (taskTypeSelect.value === 'training_outline') {
+                    alertContent += `
+                        <p>You can now use this outline to create a new training program:</p>
+                        <a href="{{ url_for('programs.create') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus me-1"></i>Create Program
+                        </a>
+                    `;
+                } else if (taskTypeSelect.value === 'social_post') {
+                    alertContent += `
+                        <p>Use these post ideas in your social media scheduler:</p>
+                        <a href="{{ url_for('marketing.scheduler') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-calendar-plus me-1"></i>Go to Scheduler
+                        </a>
+                    `;
+                } else if (taskTypeSelect.value === 'report_summary') {
+                    alertContent += `
+                        <p>Use this summary in your weekly report:</p>
+                        <a href="{{ url_for('admin.create_report') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-file-alt me-1"></i>Create Report
+                        </a>
+                    `;
+                } else if (taskTypeSelect.value === 'follow_up_email') {
+                    alertContent += `
+                        <p>These email templates can be used to follow up with participants after your programs.</p>
+                        <a href="{{ url_for('participants.index') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-users me-1"></i>View Participants
+                        </a>
+                    `;
+                }
+                
+                alert.innerHTML = alertContent;
+                resultContainer.after(alert);
+            }
+        })
+        .catch(error => {
+            // Hide loading spinner
+            generateBtn.disabled = false;
+            loadingSpinner.classList.add('d-none');
+            
+            // Show error message
+            alert('Error: ' + error.message);
+        });
+    });
+    
+    // Handle copy button
+    copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(resultContent.textContent).then(() => {
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+            }, 2000);
+        });
+    });
+    
+    // Set initial state based on URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskType = urlParams.get('task_type');
+    if (taskType) {
+        taskTypeSelect.value = taskType;
+        // Trigger change event
+        const event = new Event('change');
+        taskTypeSelect.dispatchEvent(event);
+    }
+});
+</script>
+{% endblock %}

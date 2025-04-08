@@ -1,0 +1,230 @@
+/**
+ * Custom styles for Program Administration Assistant
+ */
+
+/* General theme overrides */
+:root {
+    --border-radius: 0.375rem;
+    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Card styling */
+.card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+/* Navigation enhancements */
+.navbar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background-color: var(--bs-primary);
+}
+
+/* Form enhancements */
+.form-control, .form-select {
+    padding: 0.6rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Task board styling */
+.task-list {
+    min-height: 200px;
+    padding: 0.5rem;
+}
+
+.task-card {
+    cursor: grab;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+.task-ghost {
+    opacity: 0.5;
+}
+
+.task-chosen {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.4);
+}
+
+.task-drag {
+    transform: rotate(2deg);
+}
+
+/* Dashboard item cards */
+.dashboard-item {
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-item .icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Program and participant cards */
+.program-card, .participant-card {
+    height: 100%;
+    transition: transform 0.2s ease;
+}
+
+.program-card:hover, .participant-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Badge enhancements */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+}
+
+/* Table styling */
+.table {
+    vertical-align: middle;
+}
+
+.table td {
+    padding: 0.75rem;
+}
+
+/* AI Assistant result styling */
+#resultContent {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Modal enhancements */
+.modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+}
+
+.modal-header, .modal-footer {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* File upload styling */
+.custom-file-label::after {
+    content: "Browse";
+}
+
+/* Utility classes */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.transition {
+    transition: all 0.2s ease;
+}
+
+/* Custom accordion styling */
+.accordion-button:not(.collapsed) {
+    color: #fff;
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.125);
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+}
+
+footer a {
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Error page styling */
+.error-container {
+    margin: 3rem 0;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2b3035;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #495057;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6c757d;
+}

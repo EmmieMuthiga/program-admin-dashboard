@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card bg-dark shadow">
+                <div class="card-header bg-dark">
+                    <h4 class="card-title">Generate Sample Data</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5 class="alert-heading">⚠️ Warning</h5>
+                        <p>This function will generate sample data for the application, including:</p>
+                        <ul>
+                            <li>Admin and regular user accounts</li>
+                            <li>Multiple faculty members</li>
+                            <li>Sample programs with random status</li>
+                            <li>Program materials</li>
+                            <li>Participants with registration data</li>
+                            <li>Attendance records</li>
+                            <li>Tasks with various priorities</li>
+                            <li>Sample social media posts</li>
+                            <li>Marketing campaigns</li>
+                        </ul>
+                        <p>This operation will only work if the database is empty. If there is already data in the database, this operation will be skipped.</p>
+                        <hr>
+                        <p class="mb-0">Are you sure you want to proceed?</p>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('admin.generate_data') }}">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-warning">Generate Sample Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

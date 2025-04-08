@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <span class="badge 
+            {% if report.report_type == 'weekly' %}bg-primary
+            {% elif report.report_type == 'monthly' %}bg-success
+            {% elif report.report_type == 'quarterly' %}bg-info
+            {% elif report.report_type == 'annual' %}bg-warning
+            {% else %}bg-secondary{% endif %} mb-2">
+            {{ report.report_type }}
+        </span>
+        <p class="text-muted">Report Date: {{ report.report_date|format_date("%B %d, %Y") }}</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="btn-group mb-2">
+            {% if report.file_path %}
+                <a href="{{ url_for('static', filename='uploads/' + report.file_path) }}" target="_blank" class="btn btn-info">
+                    <i class="fas fa-file-download me-2"></i>Download
+                </a>
+            {% endif %}
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="fas fa-trash me-2"></i>Delete
+            </button>
+        </div>
+        <div>
+            <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Reports
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow mb-4">
+    <div class="card-header bg-dark">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Report Details</h5>
+            <small class="text-muted">Created by {{ report.creator.username }} on {{ report.created_at|format_date("%B %d, %Y") }}</small>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            {% if report.content %}
+                <div class="report-content">
+                    {{ report.content|safe }}
+                </div>
+            {% else %}
+                <p class="text-muted">No content provided for this report.</p>
+            {% endif %}
+        </div>
+        
+        {% if report.file_path %}
+            <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <i class="fas fa-file-alt me-3 fa-2x"></i>
+                    </div>
+                    <div>
+                        <strong>Attached File</strong>
+                        <p class="mb-0">This report includes an attached file that can be downloaded.</p>
+                    </div>
+                    <div class="ms-auto">
+                        <a href="{{ url_for('static', filename='uploads/' + report.file_path) }}" target="_blank" class="btn btn-outline-info">
+                            <i class="fas fa-download me-1"></i>Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Report Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the report "{{ report.title }}"? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('admin.delete_report', report_id=report.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Convert plain text with line breaks to paragraphs
+        const reportContent = document.querySelector('.report-content');
+        if (reportContent) {
+            const content = reportContent.innerHTML;
+            const paragraphs = content.split('\n\n').filter(p => p.trim() !== '');
+            if (paragraphs.length > 1) {
+                const formattedContent = paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+                reportContent.innerHTML = formattedContent;
+            }
+        }
+    });
+</script>
+{% endblock %}

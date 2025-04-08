@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <p class="lead">Create a new report</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Reports
+        </a>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow">
+    <div class="card-body">
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    {{ form.title.label(class="form-label") }}
+                    {% if form.title.errors %}
+                        {{ form.title(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class="form-control") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form.report_date.label(class="form-label") }}
+                    {% if form.report_date.errors %}
+                        {{ form.report_date(class="form-control is-invalid", type="date") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.report_date.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.report_date(class="form-control", type="date") }}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{ form.report_type.label(class="form-label") }}
+                    {% if form.report_type.errors %}
+                        {{ form.report_type(class="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.report_type.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.report_type(class="form-select") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    {{ form.content.label(class="form-label") }}
+                    {% if form.content.errors %}
+                        {{ form.content(class="form-control is-invalid", rows=10) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.content.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.content(class="form-control", rows=10) }}
+                    {% endif %}
+                    <div class="mt-2">
+                        <a href="{{ url_for('ai_assistant.index') }}?task_type=report_summary" class="btn btn-sm btn-outline-info" target="_blank">
+                            <i class="fas fa-robot me-1"></i>Use AI to draft report content
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    {{ form.file.label(class="form-label") }}
+                    {% if form.file.errors %}
+                        {{ form.file(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.file.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.file(class="form-control") }}
+                    {% endif %}
+                    <small class="form-text text-muted">Accepted file types: PDF, DOC, DOCX, XLS, XLSX, CSV. Maximum size: 16MB.</small>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('admin.reports') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

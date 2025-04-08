@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-10 text-center">
+        <div class="mb-5">
+            <h1 class="display-4 mb-4">Program Administration Assistant</h1>
+            <p class="lead mb-4">A comprehensive solution for managing training programs, participants, faculty, and administrative tasks.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-user-plus me-2"></i>Register
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row mt-5 g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-chalkboard-teacher fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Training Program Management</h5>
+                        <p class="card-text">Create and manage training programs, upload materials, and track schedules.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-users fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Participant Management</h5>
+                        <p class="card-text">Add and edit participant profiles, handle inquiries, and send automated emails.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-tie fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Faculty & Partner Coordination</h5>
+                        <p class="card-text">Assign faculty to programs, manage contracts, and store partner agreements.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4 g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-tasks fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Admin Panel</h5>
+                        <p class="card-text">Generate reports, track tasks with a drag-and-drop board, and manage your workflow.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-bullhorn fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Marketing & Engagement</h5>
+                        <p class="card-text">Schedule posts, track campaigns, and integrate with CRM tools like HubSpot.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-robot fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">AI-Powered Assistant</h5>
+                        <p class="card-text">Generate training outlines, social media content, and follow-up emails with AI.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

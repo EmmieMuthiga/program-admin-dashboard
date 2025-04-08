@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <p class="lead">Edit program details</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <a href="{{ url_for('programs.view', program_id=program.id) }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Program
+        </a>
+    </div>
+</div>
+
+<div class="card bg-dark border-0 shadow">
+    <div class="card-body">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    {{ form.title.label(class="form-label") }}
+                    {% if form.title.errors %}
+                        {{ form.title(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title(class="form-control") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    {{ form.description.label(class="form-label") }}
+                    {% if form.description.errors %}
+                        {{ form.description(class="form-control is-invalid", rows=5) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.description(class="form-control", rows=5) }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form.start_date.label(class="form-label") }}
+                    {% if form.start_date.errors %}
+                        {{ form.start_date(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.start_date.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.start_date(class="form-control", type="datetime-local") }}
+                    {% endif %}
+                    <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM</small>
+                </div>
+                <div class="col-md-6">
+                    {{ form.end_date.label(class="form-label") }}
+                    {% if form.end_date.errors %}
+                        {{ form.end_date(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.end_date.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.end_date(class="form-control", type="datetime-local") }}
+                    {% endif %}
+                    <small class="form-text text-muted">Format: YYYY-MM-DD HH:MM</small>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    {{ form.location.label(class="form-label") }}
+                    {% if form.location.errors %}
+                        {{ form.location(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.location.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.location(class="form-control") }}
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    {{ form.capacity.label(class="form-label") }}
+                    {% if form.capacity.errors %}
+                        {{ form.capacity(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.capacity.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.capacity(class="form-control") }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form.status.label(class="form-label") }}
+                    {% if form.status.errors %}
+                        {{ form.status(class="form-select is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.status.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.status(class="form-select") }}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{ form.faculty_ids.label(class="form-label") }}
+                    {% if form.faculty_ids.errors %}
+                        {{ form.faculty_ids(class="form-select is-invalid", size=5, multiple=true) }}
+                        <div class="invalid-feedback">
+                            {% for error in form.faculty_ids.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.faculty_ids(class="form-select", size=5, multiple=true) }}
+                    {% endif %}
+                    <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple faculty members</small>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a href="{{ url_for('programs.view', program_id=program.id) }}" class="btn btn-secondary me-md-2">Cancel</a>
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <style>
+    .main-path { fill: #ffffff; }
+    .accent { fill: #00d2ff; }
+  </style>
+  
+  <!-- Circular background -->
+  <circle cx="100" cy="100" r="90" fill="#3a7bd5" />
+  
+  <!-- Program symbol (box with checklist) -->
+  <rect x="50" y="45" width="100" height="110" rx="8" ry="8" class="main-path" />
+  
+  <!-- Checklist items -->
+  <rect x="65" y="70" width="70" height="8" rx="2" ry="2" class="accent" />
+  <rect x="65" y="90" width="70" height="8" rx="2" ry="2" class="accent" />
+  <rect x="65" y="110" width="70" height="8" rx="2" ry="2" class="accent" />
+  <rect x="65" y="130" width="40" height="8" rx="2" ry="2" class="accent" />
+  
+  <!-- Check marks -->
+  <circle cx="45" cy="74" r="10" class="accent" />
+  <path d="M40,74 L45,79 L52,68" stroke="white" stroke-width="3" fill="none" />
+  
+  <circle cx="45" cy="94" r="10" class="accent" />
+  <path d="M40,94 L45,99 L52,88" stroke="white" stroke-width="3" fill="none" />
+  
+  <circle cx="45" cy="114" r="10" class="accent" />
+  <path d="M40,114 L45,119 L52,108" stroke="white" stroke-width="3" fill="none" />
+  
+  <circle cx="45" cy="134" r="10" class="accent" />
+  <path d="M40,134 L45,139 L52,128" stroke="white" stroke-width="3" fill="none" />
+</svg>
