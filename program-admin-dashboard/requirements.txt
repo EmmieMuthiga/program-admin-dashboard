@@ -1,1 +1,5 @@
 pip freeze > requirements.txt
+mv project_folder/requirements.txt ./
+git add requirements.txt
+git commit -m "Move requirements.txt to root directory"
+git push
